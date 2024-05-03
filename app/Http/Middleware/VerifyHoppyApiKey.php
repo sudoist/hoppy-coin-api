@@ -26,7 +26,7 @@ class VerifyHoppyApiKey
                 'status' => 'Error',
                 'code' => '403',
                 'message' => 'Access denied',
-            ]);
+            ], 403);
         }
 
         return $next($request);
