@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // Phaser Tutorial API
-Route::prefix('/v0')->group(function () {
+Route::middleware('with_hoppy_api_key')->prefix('/v0')->group(function () {
     Route::resources([
         'scores' => ScoreController::class,
     ]);

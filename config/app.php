@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | API Key
+    |--------------------------------------------------------------------------
+    |
+    | These will let the web or mobile client to authenticate with API.
+    |
+    */
+    'hoppy_api_key' => env('HOPPY_API_KEY'),
+
 ];
