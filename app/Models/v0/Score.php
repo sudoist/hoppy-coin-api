@@ -19,6 +19,8 @@ class Score extends Model
     protected $fillable = [
         'name',
         'score',
+        'origin',
+        'version',
     ];
 
     /**

@@ -77,6 +77,9 @@ class ScoreController extends Controller
         $score = Score::create([
             'name' => $request->get("name"),
             'score' => $request->get("score"),
+            'origin' => $request->header('Origin'),
+            // Prod is latest, for releases version is in domain when null
+            'version' => $request->get("version") ? $request->get("version") : $request->header('Origin'),
         ]);
 
         if ($score) {
