@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Http\Requests\StoreScoreRequest;
-use App\Http\Requests\UpdateScoreRequest;
-use App\Models\v0\Score;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\StoreScoreRequest;
+use App\Http\Requests\v1\UpdateScoreRequest;
+use App\Models\v1\Score;
 
 class ScoreController extends Controller
 {
@@ -33,32 +34,6 @@ class ScoreController extends Controller
             'code' => '500',
             'message' => 'Scores error',
         ]);
-    }
-
-    private function sortStringScore($scores)
-    {
-        $scoresCollection = collect([]);
-
-        foreach ($scores as $score) {
-            $scoresCollection->put($score->score, [
-                "name" => $score->name,
-                "score" => $score->score,
-                "date" => $score->created_at,
-            ]);
-        }
-
-        $sortedCollection = $scoresCollection->sortBy([
-            ['score', 'desc']
-        ]);
-
-        $sorted = [];
-
-        // Converting back again to array, this is ugly but need to fix scores order for now
-        foreach ($sortedCollection as $sortedScore) {
-            $sorted[] =  $sortedScore;
-        }
-
-        return $sorted;
     }
 
     /**
@@ -110,7 +85,7 @@ class ScoreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Score $score)
+    public function show(score $v1Score)
     {
         //
     }
@@ -118,7 +93,7 @@ class ScoreController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Score $score)
+    public function edit(score $v1Score)
     {
         //
     }
@@ -126,7 +101,7 @@ class ScoreController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateScoreRequest $request, Score $score)
+    public function update(UpdateScoreRequest $request, score $v1Score)
     {
         //
     }
@@ -134,8 +109,36 @@ class ScoreController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Score $score)
+    public function destroy(score $v1Score)
     {
         //
+    }
+
+    private function sortStringScore($scores)
+    {
+        $scoresCollection = collect([]);
+
+        foreach ($scores as $score) {
+            $scoresCollection->put($score->score, [
+                "name" => $score->name,
+                "score" => $score->score,
+                "date" => $score->created_at,
+                "origin" => $score->origin,
+                "version" => $score->version,
+            ]);
+        }
+
+        $sortedCollection = $scoresCollection->sortBy([
+            ['score', 'desc']
+        ]);
+
+        $sorted = [];
+
+        // Converting back again to array, this is ugly but need to fix scores order for now
+        foreach ($sortedCollection as $sortedScore) {
+            $sorted[] =  $sortedScore;
+        }
+
+        return $sorted;
     }
 }

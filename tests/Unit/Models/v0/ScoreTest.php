@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Models\v0;
 
 use App\Models\v0\Score;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,6 +21,8 @@ class ScoreTest extends TestCase
         $score = Score::create([
             "name" => "SDO",
             "score" => "1234",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         // Assert that the score was created successfully
@@ -36,16 +38,22 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "SDO",
             "score" => "100",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         Score::create([
             "name" => "DEV",
             "score" => "500",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         Score::create([
             "name" => "AAA",
             "score" => "50",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         $scores = Score::orderBy('score', 'desc')
