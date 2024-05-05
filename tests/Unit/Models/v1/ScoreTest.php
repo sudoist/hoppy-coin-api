@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Models\v1;
 
-use App\Models\v0\Score;
+use App\Models\v1\Score;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,6 +21,7 @@ class ScoreTest extends TestCase
         $score = Score::create([
             "name" => "SDO",
             "score" => "1234",
+            "level" => "Arcade",
             "origin" => "phpunit",
             "version" => "v1",
         ]);
@@ -29,6 +30,7 @@ class ScoreTest extends TestCase
         $this->assertNotNull($score);
         $this->assertEquals($score->name, 'SDO');
         $this->assertEquals($score->score, '1234');
+        $this->assertEquals($score->level, 'Arcade');
         $this->assertEquals($score->version, 'v1');
         $this->assertTrue($score->exists);
     }
@@ -39,6 +41,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "SDO",
             "score" => "100",
+            "level" => "Ranked1",
             "origin" => "phpunit",
             "version" => "phpunit",
         ]);
@@ -46,6 +49,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "DEV",
             "score" => "500",
+            "level" => "Ranked2",
             "origin" => "phpunit",
             "version" => "1.1.1.1",
         ]);
@@ -53,6 +57,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "AAA",
             "score" => "50",
+            "level" => "Ranked3",
             "origin" => "phpunit",
             "version" => "phpunit",
         ]);
@@ -68,6 +73,7 @@ class ScoreTest extends TestCase
             $this->assertNotNull($sorted);
             $this->assertEquals($sorted[0]["name"], "DEV");
             $this->assertEquals($sorted[0]["version"], "1.1.1.1");
+            $this->assertEquals($sorted[0]["level"], "Ranked2");
             $this->assertEquals($sorted[1]["name"], "SDO");
             $this->assertEquals($sorted[2]["name"], "AAA");
         }
@@ -81,9 +87,10 @@ class ScoreTest extends TestCase
             $scoresCollection->put($score->score, [
                 "name" => $score->name,
                 "score" => $score->score,
-                "date" => $score->created_at,
+                "level" => $score->level,
                 "origin" => $score->origin,
                 "version" => $score->version,
+                "date" => $score->created_at,
             ]);
         }
 

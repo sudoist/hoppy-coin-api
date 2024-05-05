@@ -21,6 +21,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "SDO",
             "score" => "100",
+            "level" => "Ranked1",
             "origin" => "phpunit",
             "version" => "phpunit",
         ]);
@@ -28,6 +29,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "DEV",
             "score" => "500",
+            "level" => "Ranked2",
             "origin" => "phpunit",
             "version" => "phpunit",
         ]);
@@ -35,6 +37,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "AAA",
             "score" => "50",
+            "level" => "Ranked3",
             "origin" => "phpunit",
             "version" => "phpunit",
         ]);
@@ -50,7 +53,8 @@ class ScoreTest extends TestCase
 
         $body = [
             'name' => 'SDO',
-            'score' => 9999
+            'score' => "9999",
+            'level' => "Endpoint"
         ];
 
         $response = $this->post('/api/v1/scores', $body);
@@ -59,6 +63,7 @@ class ScoreTest extends TestCase
 
         // Test of ordered correctly
         $this->assertEquals($response->json()["data"][0]["score"], "9999");
+        $this->assertEquals($response->json()["data"][0]["level"], "Endpoint");
         $this->assertEquals($response->json()["data"][0]["version"], "composer");
         $this->assertEquals($response->json()["data"][1]["score"], "500");
         $this->assertEquals($response->json()["data"][2]["score"], "100");
@@ -70,6 +75,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "SDO",
             "score" => "100",
+            "level" => "Ranked1",
             "origin" => "phpunit",
             "version" => "0.1.1.0",
         ]);
@@ -77,6 +83,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "DEV",
             "score" => "500",
+            "level" => "Ranked2",
             "origin" => "phpunit",
             "version" => "phpunit",
         ]);
@@ -84,6 +91,7 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "AAA",
             "score" => "50",
+            "level" => "Ranked3",
             "origin" => "phpunit",
             "version" => "phpunit",
         ]);
@@ -103,6 +111,7 @@ class ScoreTest extends TestCase
         // Test of ordered correctly
         $this->assertEquals($response->json()["data"][0]["name"], "DEV");
         $this->assertEquals($response->json()["data"][1]["name"], "SDO");
+        $this->assertEquals($response->json()["data"][1]["level"], "Ranked1");
         $this->assertEquals($response->json()["data"][1]["version"], "0.1.1.0");
         $this->assertEquals($response->json()["data"][2]["name"], "AAA");
     }

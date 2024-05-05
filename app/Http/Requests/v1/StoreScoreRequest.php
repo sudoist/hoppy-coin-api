@@ -24,6 +24,7 @@ class StoreScoreRequest extends FormRequest
         return [
             'name'=>'required|string|max:3',
             'score' => 'required|numeric',
+            'level' => 'required|string',
         ];
     }
 }

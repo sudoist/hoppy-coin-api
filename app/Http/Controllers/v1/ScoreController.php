@@ -52,6 +52,7 @@ class ScoreController extends Controller
         $score = Score::create([
             'name' => $request->get("name"),
             'score' => $request->get("score"),
+            'level' => $request->get("level"),
             'origin' => $request->header('Origin'),
             // Prod is latest, for releases version is in domain when null
             'version' => $request->get("version") ? $request->get("version") : $request->header('Origin'),
@@ -85,7 +86,7 @@ class ScoreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(score $v1Score)
+    public function show(Score $score)
     {
         //
     }
@@ -93,7 +94,7 @@ class ScoreController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(score $v1Score)
+    public function edit(Score $score)
     {
         //
     }
@@ -101,7 +102,7 @@ class ScoreController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateScoreRequest $request, score $v1Score)
+    public function update(UpdateScoreRequest $request, Score $score)
     {
         //
     }
@@ -109,7 +110,7 @@ class ScoreController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(score $v1Score)
+    public function destroy(Score $score)
     {
         //
     }
@@ -122,6 +123,7 @@ class ScoreController extends Controller
             $scoresCollection->put($score->score, [
                 "name" => $score->name,
                 "score" => $score->score,
+                "level" => $score->level,
                 "date" => $score->created_at,
                 "origin" => $score->origin,
                 "version" => $score->version,
