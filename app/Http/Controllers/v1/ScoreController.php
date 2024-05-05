@@ -124,9 +124,9 @@ class ScoreController extends Controller
                 "name" => $score->name,
                 "score" => $score->score,
                 "level" => $score->level,
-                "date" => $score->created_at,
                 "origin" => $score->origin,
                 "version" => $score->version,
+                "date" => $score->created_at,
             ]);
         }
 
