@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\v0;
+namespace App\Models\v1;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,11 +14,12 @@ class Score extends Model
      *
      * @var string
      */
-    protected $table = 'v0_scores';
+    protected $table = 'v1_scores';
 
     protected $fillable = [
         'name',
         'score',
+        'level',
         'origin',
         'version',
     ];

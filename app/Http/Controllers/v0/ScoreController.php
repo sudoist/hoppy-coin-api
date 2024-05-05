@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v0;
 
-use App\Http\Requests\StoreScoreRequest;
-use App\Http\Requests\UpdateScoreRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\v0\StoreScoreRequest;
+use App\Http\Requests\v0\UpdateScoreRequest;
 use App\Models\v0\Score;
 
 class ScoreController extends Controller
@@ -35,32 +36,6 @@ class ScoreController extends Controller
         ]);
     }
 
-    private function sortStringScore($scores)
-    {
-        $scoresCollection = collect([]);
-
-        foreach ($scores as $score) {
-            $scoresCollection->put($score->score, [
-                "name" => $score->name,
-                "score" => $score->score,
-                "date" => $score->created_at,
-            ]);
-        }
-
-        $sortedCollection = $scoresCollection->sortBy([
-            ['score', 'desc']
-        ]);
-
-        $sorted = [];
-
-        // Converting back again to array, this is ugly but need to fix scores order for now
-        foreach ($sortedCollection as $sortedScore) {
-            $sorted[] =  $sortedScore;
-        }
-
-        return $sorted;
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -77,6 +52,9 @@ class ScoreController extends Controller
         $score = Score::create([
             'name' => $request->get("name"),
             'score' => $request->get("score"),
+            'origin' => $request->header('Origin'),
+            // Prod is latest, for releases version is in domain when null
+            'version' => $request->get("version") ? $request->get("version") : $request->header('Origin'),
         ]);
 
         if ($score) {
@@ -134,5 +112,31 @@ class ScoreController extends Controller
     public function destroy(Score $score)
     {
         //
+    }
+
+    private function sortStringScore($scores)
+    {
+        $scoresCollection = collect([]);
+
+        foreach ($scores as $score) {
+            $scoresCollection->put($score->score, [
+                "name" => $score->name,
+                "score" => $score->score,
+                "date" => $score->created_at,
+            ]);
+        }
+
+        $sortedCollection = $scoresCollection->sortBy([
+            ['score', 'desc']
+        ]);
+
+        $sorted = [];
+
+        // Converting back again to array, this is ugly but need to fix scores order for now
+        foreach ($sortedCollection as $sortedScore) {
+            $sorted[] =  $sortedScore;
+        }
+
+        return $sorted;
     }
 }

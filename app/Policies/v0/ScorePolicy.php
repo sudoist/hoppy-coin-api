@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Policies\v0;
 
 use App\Models\v0\Score;
 use App\Models\User;

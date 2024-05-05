@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('v_0_scores', function (Blueprint $table) {
+        Schema::create('v1_scores', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('score');
+            $table->string('level');
+            $table->string('origin');
+            $table->string('version');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('v_0_scores');
+        Schema::dropIfExists('v1_scores');
     }
 };

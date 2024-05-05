@@ -1,8 +1,7 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Endpoints\v0;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\v0\Score;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -22,16 +21,22 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "SDO",
             "score" => "100",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         Score::create([
             "name" => "DEV",
             "score" => "500",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         Score::create([
             "name" => "AAA",
             "score" => "50",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         // Set your headers here
@@ -39,7 +44,8 @@ class ScoreTest extends TestCase
 
         $this->withHeaders([
             'x-api-key' => $apiKey,
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
+            'Origin' => 'phpunit'
         ]);
 
         $body = [
@@ -63,16 +69,22 @@ class ScoreTest extends TestCase
         Score::create([
             "name" => "SDO",
             "score" => "100",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         Score::create([
             "name" => "DEV",
             "score" => "500",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         Score::create([
             "name" => "AAA",
             "score" => "50",
+            "origin" => "phpunit",
+            "version" => "phpunit",
         ]);
 
         // Set your headers here
