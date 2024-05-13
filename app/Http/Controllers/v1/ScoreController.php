@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\GetScoresRequest;
 use App\Http\Requests\v1\StoreScoreRequest;
 use App\Http\Requests\v1\UpdateScoreRequest;
 use App\Models\v1\Score;
@@ -12,9 +13,10 @@ class ScoreController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(GetScoresRequest $request)
     {
-        $scores = Score::orderBy('score', 'desc')
+        $scores = Score::where('level', $request->get("level"))
+            ->orderBy('score', 'desc')
             ->get();
 
         if ($scores) {
@@ -60,7 +62,8 @@ class ScoreController extends Controller
 
         if ($score) {
             // Return updated scores
-            $scores = Score::orderBy('score', 'desc')
+            $scores = Score::where('level', $score->level)
+                ->orderBy('score', 'desc')
                 ->get();
 
             if ($scores) {
@@ -138,7 +141,7 @@ class ScoreController extends Controller
 
         // Converting back again to array, this is ugly but need to fix scores order for now
         foreach ($sortedCollection as $sortedScore) {
-            $sorted[] =  $sortedScore;
+            $sorted[] = $sortedScore;
         }
 
         return $sorted;
