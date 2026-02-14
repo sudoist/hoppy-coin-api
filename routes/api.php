@@ -11,11 +11,6 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('with_hoppy_api_key')->group(function () {
-    Route::prefix('v0')->group(function () {
-        Route::resources([
-            'scores' => ScoreControllerV0::class,
-        ]);
-    });
 
     Route::prefix('v1')->group(function () {
         Route::resources([
