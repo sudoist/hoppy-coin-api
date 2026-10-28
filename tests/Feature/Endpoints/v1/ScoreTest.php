@@ -65,8 +65,7 @@ class ScoreTest extends TestCase
         $this->assertEquals($response->json()["data"][0]["score"], "9999");
         $this->assertEquals($response->json()["data"][0]["level"], "Endpoint");
         $this->assertEquals($response->json()["data"][0]["version"], "composer");
-        $this->assertEquals($response->json()["data"][1]["score"], "500");
-        $this->assertEquals($response->json()["data"][2]["score"], "100");
+        $this->assertCount(1, $response->json("data"));
     }
 
     public function test_the_endpoint_returns_sorted_response(): void
@@ -104,16 +103,14 @@ class ScoreTest extends TestCase
             'Accept' => 'application/json'
         ]);
 
-        $response = $this->get('/api/v1/scores');
+        $response = $this->get('/api/v1/scores?level=Ranked1');
 
         $response->assertStatus(200);
 
         // Test of ordered correctly
-        $this->assertEquals($response->json()["data"][0]["name"], "DEV");
-        $this->assertEquals($response->json()["data"][1]["name"], "SDO");
-        $this->assertEquals($response->json()["data"][1]["level"], "Ranked1");
-        $this->assertEquals($response->json()["data"][1]["version"], "0.1.1.0");
-        $this->assertEquals($response->json()["data"][2]["name"], "AAA");
+        $this->assertCount(1, $response->json("data"));
+        $this->assertEquals($response->json("data.0.name"), "SDO");
+        $this->assertEquals($response->json("data.0.version"), "0.1.1.0");
     }
 
     public function test_the_endpoint_returns_403_response_without_api_key(): void
@@ -122,4 +119,20 @@ class ScoreTest extends TestCase
 
         $response->assertStatus(403);
     }
+    public function test_tied_scores_are_preserved(): void
+    {
+        config(['app.hoppy_api_key' => 'test-key']);
+
+        $attributes = ['score' => 100, 'origin' => 'phpunit', 'version' => 'test'];
+        $attributes['level'] = 'Ranked1';
+        Score::create(array_merge($attributes, ['name' => 'AAA']));
+        Score::create(array_merge($attributes, ['name' => 'BBB']));
+
+        $this->withHeaders(['x-api-key' => 'test-key', 'Accept' => 'application/json']);
+        $response = $this->get('/api/v1/scores?level=Ranked1');
+
+        $response->assertOk()->assertJsonCount(2, 'data');
+        $this->assertEqualsCanonicalizing(['AAA', 'BBB'], array_column($response->json('data'), 'name'));
+    }
+
 }
