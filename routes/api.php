@@ -12,22 +12,14 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware('with_hoppy_api_key')->group(function () {
 
+    Route::prefix('v0')->group(function () {
+        Route::get('scores', [ScoreControllerV0::class, 'index']);
+        Route::post('scores', [ScoreControllerV0::class, 'store']);
+    });
+
     Route::prefix('v1')->group(function () {
-        Route::resources([
-            'scores' => ScoreControllerV1::class,
-        ]);
+        Route::get('scores', [ScoreControllerV1::class, 'index']);
+        Route::post('scores', [ScoreControllerV1::class, 'store']);
     });
 
 });
-
-//Route::middleware('with_hoppy_api_key')->prefix('/v0')->group(function () {
-//    Route::resources([
-//        'scores' => ScoreControllerV0::class,
-//    ]);
-//});
-
-//Route::middleware('with_hoppy_api_key')->prefix('/v1')->group(function () {
-//    Route::resources([
-//        'scores' => ScoreControllerV1::class,
-//    ]);
-//});
