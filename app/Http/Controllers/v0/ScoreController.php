@@ -119,16 +119,14 @@ class ScoreController extends Controller
         $scoresCollection = collect([]);
 
         foreach ($scores as $score) {
-            $scoresCollection->put($score->score, [
+            $scoresCollection->push([
                 "name" => $score->name,
                 "score" => $score->score,
                 "date" => $score->created_at,
             ]);
         }
 
-        $sortedCollection = $scoresCollection->sortBy([
-            ['score', 'desc']
-        ]);
+        $sortedCollection = $scoresCollection->sortByDesc('score')->values();
 
         $sorted = [];
 
