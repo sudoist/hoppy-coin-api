@@ -111,4 +111,20 @@ class ScoreTest extends TestCase
 
         $response->assertStatus(403);
     }
+    public function test_tied_scores_are_preserved(): void
+    {
+        config(['app.hoppy_api_key' => 'test-key']);
+
+        $attributes = ['score' => 100, 'origin' => 'phpunit', 'version' => 'test'];
+        
+        Score::create(array_merge($attributes, ['name' => 'AAA']));
+        Score::create(array_merge($attributes, ['name' => 'BBB']));
+
+        $this->withHeaders(['x-api-key' => 'test-key', 'Accept' => 'application/json']);
+        $response = $this->get('/api/v0/scores');
+
+        $response->assertOk()->assertJsonCount(2, 'data');
+        $this->assertEqualsCanonicalizing(['AAA', 'BBB'], array_column($response->json('data'), 'name'));
+    }
+
 }
