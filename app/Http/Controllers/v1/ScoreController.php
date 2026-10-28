@@ -123,7 +123,7 @@ class ScoreController extends Controller
         $scoresCollection = collect([]);
 
         foreach ($scores as $score) {
-            $scoresCollection->put($score->score, [
+            $scoresCollection->push([
                 "name" => $score->name,
                 "score" => $score->score,
                 "level" => $score->level,
@@ -133,9 +133,7 @@ class ScoreController extends Controller
             ]);
         }
 
-        $sortedCollection = $scoresCollection->sortBy([
-            ['score', 'desc']
-        ]);
+        $sortedCollection = $scoresCollection->sortByDesc('score')->values();
 
         $sorted = [];
 
