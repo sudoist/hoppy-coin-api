@@ -7,9 +7,60 @@ use App\Http\Requests\v1\GetScoresRequest;
 use App\Http\Requests\v1\StoreScoreRequest;
 use App\Http\Requests\v1\UpdateScoreRequest;
 use App\Models\v1\Score;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class ScoreController extends Controller
 {
+    private const GUEST_LEVELS = ['Phaser Initial', 'Arctic Classic', 'Land Mine Beach'];
+    private const RUN_TTL_SECONDS = 1800;
+
+    public function startRun(Request $request)
+    {
+        $validated = $request->validate(['level' => ['required', 'in:Phaser Initial,Arctic Classic,Land Mine Beach']]);
+        $token = Str::random(64);
+        Cache::put('hoppy-run:' . hash('sha256', $token), [
+            'level' => $validated['level'],
+            'started' => now()->timestamp,
+        ], now()->addSeconds(self::RUN_TTL_SECONDS));
+
+        return response()->json(['token' => $token, 'expires_in' => self::RUN_TTL_SECONDS]);
+    }
+
+    public function storeGuest(Request $request)
+    {
+        $data = $request->validate([
+            'token' => ['required', 'string', 'size:64'],
+            'name' => ['required', 'regex:/^[A-Za-z]{3}$/'],
+            'score' => ['required', 'integer', 'min:10', 'max:1000000', 'multiple_of:10'],
+            'level' => ['required', 'in:Phaser Initial,Arctic Classic,Land Mine Beach'],
+        ]);
+
+        $key = 'hoppy-run:' . hash('sha256', $data['token']);
+        // Cache pull consumes the token, including failed submissions.
+        $run = Cache::pull($key);
+        if (!is_array($run) || $run['level'] !== $data['level']) {
+            return response()->json(['message' => 'Invalid or expired run'], 422);
+        }
+        $elapsed = now()->timestamp - $run['started'];
+        // Client scores are untrusted: reject impossible speed, not just token reuse.
+        if ($elapsed < 2 || $elapsed > self::RUN_TTL_SECONDS || $data['score'] > $elapsed * 200) {
+            return response()->json(['message' => 'Implausible run score'], 422);
+        }
+
+        Score::create([
+            'name' => strtoupper($data['name']),
+            'score' => $data['score'],
+            'level' => $data['level'],
+            'origin' => $request->header('Origin'),
+            'version' => 'guest',
+        ]);
+
+        $scores = Score::where('level', $data['level'])->orderBy('score', 'desc')->get();
+        return response()->json(['status' => 'OK', 'code' => '200', 'message' => 'List of scores', 'data' => $this->sortStringScore($scores)]);
+    }
+
     /**
      * Display a listing of the resource.
      */
